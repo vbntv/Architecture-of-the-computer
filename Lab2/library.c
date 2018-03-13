@@ -6,7 +6,7 @@
 
 int sc_memoryInit()
 {
-    memset(ram, 0, 4*sizeof(int));
+  	  memset(ram, 0, 4*sizeof(int));
 	return 0;
 }
 
@@ -42,11 +42,12 @@ int sc_regSet(int flag, int value)
 
 int sc_regGet(int flag, int *value)
 {
-	if((registr < 1) | (registr > 5))
+	/*if((registr < 1) || (registr > 5))
 	{
 		return 1;
 	}
-	else
+	*/
+	
 	return *value = ((registr >> (flag-1)));
 }
 
@@ -78,7 +79,18 @@ int sc_memoryGet(int address, int *value)
 
 int sc_commandEncode(int command, int operand, int *value)
 {
-	if((operand < 127) | (operand < 0) | (command > 127) |( command < 0))
+	if((command < 10) || 
+	((command > 11) & (command < 20)) ||
+	((command > 21) & (command < 30)) ||
+	((command > 33) & (command < 40)) ||
+	((command > 43) & (command < 51)))
+	{
+		printf("Wrong command");
+		sc_regSet(FLAG_WRONG_COMMAND, 1);
+		return 1;
+	}
+	
+	if((operand > 127) | (operand < 0) | (command > 127) |( command < 0))
 	{
 		return 1;
 	}
@@ -91,7 +103,7 @@ int sc_commandEncode(int command, int operand, int *value)
 		temp |= 0 << 14;
 		return *value = temp;	
 	}
-	
+	return 1;
 }
 
 int sc_commandDecode(int value, int *command, int *operand)
